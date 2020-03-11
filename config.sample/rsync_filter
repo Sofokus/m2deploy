@@ -1,0 +1,25 @@
+# includes
++ /var/
++ /var/di/
++ /var/view_preprocessed/
++ /var/resource_config.json
++ /pub/
++ /pub/media/
++ /pub/media/.htaccess
++ /pub/media/customer/
++ /pub/media/customer/.htaccess
++ /pub/media/downloadable/
++ /pub/media/downloadable/.htaccess
++ /pub/media/import/
++ /pub/media/import/.htaccess
++ /pub/media/theme_customization/
++ /pub/media/theme_customization/.htaccess
+
+# excludes
+- /var/**
+- /pub/media/**
+- /pub/media/wysiwyg/**
+- /.git/
+- /app/etc/env.php
+- /dev/
+- /sitemap.xml

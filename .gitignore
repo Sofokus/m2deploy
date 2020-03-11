@@ -1,0 +1,13 @@
+/config/*
+
+/.idea
+/.buildpath
+/.cache
+/.metadata
+/.project
+/.settings
+*.rej
+*.orig
+*.bak
+.~lock.*#
+.directory
