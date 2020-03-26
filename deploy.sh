@@ -51,7 +51,7 @@ merge_paths() {
 	then
 		result="${path1}/${path2}"
 	fi
-	echo $result
+	echo "$result"
 }
 merge_multiple_paths() {
 	local path=''
@@ -66,7 +66,7 @@ get_git_branch() {
 	local path=$1
 	local git_path=$(merge_paths "$path" .git)
 	local result=$(git --git-dir="${git_path}" --work-tree="${path}" rev-parse --revs-only --abbrev-ref HEAD)
-	echo ${result}
+	echo "${result}"
 }
 
 flush_redis() {
@@ -99,6 +99,7 @@ ALLOWED_IP="127.0.0.1"
 
 # include config
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# shellcheck disable=SC1090
 . "$script_dir/config/config.sh"
 
 USER_HOME="$(eval echo ~$DEFAULT_USER)"
@@ -344,7 +345,7 @@ echo
 
 PHP_VERSION=$(${PHP_CMD} -v | head -n1 | cut -d' ' -f2 | cut -d'.' -f1-2)
 echo "# Reload php${PHP_VERSION}"
-sudo service php${PHP_VERSION}-fpm reload
+sudo service "php${PHP_VERSION}-fpm" reload
 
 $TARGET_MAGECMD maintenance:disable
 echo
