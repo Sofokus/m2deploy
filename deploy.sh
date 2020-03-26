@@ -254,12 +254,12 @@ do
 done
 echo
 
-RSYNC_CMD="sudo rsync --recursive --links --delete --checksum \
-    $DEPLOY_DIR/ ${TARGET_DIR%/}"
+RSYNC_CMD="sudo rsync --recursive --links --delete --checksum $DEPLOY_DIR/ ${TARGET_DIR%/}"
 RSYNC_FILTER_FILE="${script_dir}/config/rsync_filter"
 if [ ! -f "$RSYNC_FILTER_FILE" ]; then
     RSYNC_FILTER_FILE="${script_dir}/config.sample/rsync_filter"
 fi
+RSYNC_CMD_MEDIA="sudo rsync --recursive --links --update --checksum $DEPLOY_DIR/pub/media/ ${TARGET_DIR}/pub/media"
 
 # ensure that we don't get massive list of files due to all changing permissions
 set_permissions "$DEPLOY_DIR"
@@ -267,6 +267,10 @@ set_permissions "$TARGET_DIR"
 
 echo '--- Files to deploy start ---'
 $RSYNC_CMD --filter="merge ${RSYNC_FILTER_FILE}" --dry-run --verbose
+echo
+echo '--- Files to deploy media ---'
+echo
+$RSYNC_CMD_MEDIA --dry-run --verbose
 echo '--- Files to deploy end ---'
 
 echo
@@ -332,6 +336,7 @@ sudo rm -rf "$TARGET_DIR"/var/{page_,}cache/*
 
 echo "# Rsync changes to ${TARGET_ENV_INFO}"
 $RSYNC_CMD --filter="merge ${RSYNC_FILTER_FILE}"
+$RSYNC_CMD_MEDIA
 echo
 
 set_permissions "$TARGET_DIR"
