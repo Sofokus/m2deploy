@@ -136,8 +136,8 @@ sudo chown "${USER}":"${USER}" "$TEMP"
 
 SUDO_USR="sudo -H -u $DEFAULT_USER -i"
 COMPOSER_CMD="$SUDO_USR $PHP_CMD $(command -v composer)"
-DEPLOY_MAGECMD="$SUDO_USR $PHP_CMD $(merge_paths "${DEPLOY_DIR}" '/bin/magento') -v"
-TARGET_MAGEBIN="$(merge_paths "${TARGET_DIR}" '/bin/magento') -v"
+DEPLOY_MAGECMD="$SUDO_USR $PHP_CMD $(merge_paths "${DEPLOY_DIR}" '/bin/magento')"
+TARGET_MAGEBIN="$(merge_paths "${TARGET_DIR}" '/bin/magento')"
 TARGET_MAGECMD="$SUDO_USR $PHP_CMD $TARGET_MAGEBIN"
 GIT_CMD="$SUDO_USR git --git-dir=$DEPLOY_DIR/.git --work-tree=$DEPLOY_DIR/"
 
@@ -217,11 +217,11 @@ then
 	$COMPOSER_CMD install -d "$DEPLOY_DIR"
 	sudo rm -rf "$DEPLOY_DIR"/var/cache/*
 	# initial compile needed, because setup:upgrade might fail without it
-	$DEPLOY_MAGECMD setup:di:compile
-	$DEPLOY_MAGECMD setup:upgrade
+	$DEPLOY_MAGECMD setup:di:compile -v
+	$DEPLOY_MAGECMD setup:upgrade -v
 	# second compile needed, because the initial compile might not generate
 	# code for modules enabled by the upgrade
-	$DEPLOY_MAGECMD setup:di:compile
+	$DEPLOY_MAGECMD setup:di:compile -v
 	echo
 fi
 
@@ -304,7 +304,7 @@ then
     echo "# Uninstall modules $removed_modules"
     # https://community.magento.com/t5/Magento-2-x-Technical-Issues/Custom-module-uninstall/m-p/50114/highlight/true#M1430
     $SUDO_USR ln -s ~$USER_HOME/.config/composer/auth.json "$TARGET_DIR"/
-    $TARGET_MAGECMD module:uninstall $removed_modules
+    $TARGET_MAGECMD module:uninstall -v $removed_modules
     sudo unlink "$TARGET_DIR"/auth.json
 else
     echo "# No modules to uninstall"
@@ -315,7 +315,7 @@ then
     $TARGET_MAGECMD maintenance:enable --ip=$ALLOWED_IP
 fi
 
-$TARGET_MAGECMD cache:flush
+$TARGET_MAGECMD -v cache:flush
 echo
 
 if [[ -n $TARGET_CACHE_REDIS_DB ]]
@@ -344,7 +344,7 @@ set_permissions "$TARGET_DIR"
 echo "# Run setup upgrade"
 if [ "$MODE" = "default" ]
 then
-	$TARGET_MAGECMD setup:upgrade --keep-generated
+	$TARGET_MAGECMD setup:upgrade -v --keep-generated
 fi
 echo
 
