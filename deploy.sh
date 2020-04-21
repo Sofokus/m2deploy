@@ -136,8 +136,8 @@ sudo chown "${USER}":"${USER}" "$TEMP"
 
 SUDO_USR="sudo -H -u $DEFAULT_USER -i"
 COMPOSER_CMD="$SUDO_USR $PHP_CMD $(command -v composer)"
-DEPLOY_MAGECMD="$SUDO_USR $PHP_CMD $(merge_paths "${DEPLOY_DIR}" '/bin/magento')"
-TARGET_MAGEBIN=$(merge_paths "${TARGET_DIR}" '/bin/magento')
+DEPLOY_MAGECMD="$SUDO_USR $PHP_CMD $(merge_paths "${DEPLOY_DIR}" '/bin/magento') -v"
+TARGET_MAGEBIN="$(merge_paths "${TARGET_DIR}" '/bin/magento') -v"
 TARGET_MAGECMD="$SUDO_USR $PHP_CMD $TARGET_MAGEBIN"
 GIT_CMD="$SUDO_USR git --git-dir=$DEPLOY_DIR/.git --work-tree=$DEPLOY_DIR/"
 
