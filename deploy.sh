@@ -340,8 +340,6 @@ $RSYNC_CMD --filter="merge ${RSYNC_FILTER_FILE}"
 $RSYNC_CMD_MEDIA
 echo
 
-set_permissions "$TARGET_DIR"
-
 echo "# Run setup upgrade"
 if [ "$MODE" = "default" ]
 then
@@ -355,5 +353,7 @@ sudo service "php${PHP_VERSION}-fpm" reload
 
 $TARGET_MAGECMD maintenance:disable
 echo
+
+set_permissions "$TARGET_DIR"
 
 measure_timer "Deployment to ${TARGET_ENV_INFO}"
