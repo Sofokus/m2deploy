@@ -222,6 +222,7 @@ then
 	# second compile needed, because the initial compile might not generate
 	# code for modules enabled by the upgrade
 	$DEPLOY_MAGECMD setup:di:compile -v
+	$COMPOSER_CMD dump-autoload -o --apcu
 	echo
 fi
 
