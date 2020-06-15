@@ -343,6 +343,9 @@ echo
 echo "# Run setup upgrade"
 if [ "$MODE" = "default" ]
 then
+    # ensure that config.php is writable
+    sudo chown "$DEFAULT_USER":"$DEFAULT_GROUP" "$TARGET_DIR/app/etc/config.php"
+    sudo chmod ug+rw "$TARGET_DIR/app/etc/config.php"
 	$TARGET_MAGECMD setup:upgrade -v --keep-generated
 fi
 echo
