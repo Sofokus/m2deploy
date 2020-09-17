@@ -8,6 +8,7 @@
 # media is copied separately (without --delete)
 - /var/**
 - /pub/media
+- /pub/sitemap.xml
 - /.git/
 - /app/etc/env.php
 - /dev/
