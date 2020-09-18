@@ -3,12 +3,14 @@
 + /var/di/
 + /var/view_preprocessed/
 + /var/resource_config.json
++ /pub/sitemap/
 
 # excludes
 # media is copied separately (without --delete)
 - /var/**
 - /pub/media
 - /pub/sitemap.xml
+- /pub/sitemap/**
 - /.git/
 - /app/etc/env.php
 - /dev/
