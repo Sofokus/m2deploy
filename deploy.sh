@@ -102,8 +102,6 @@ script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # shellcheck disable=SC1090
 . "$script_dir/config/config.sh"
 
-USER_HOME="$(eval echo ~$DEFAULT_USER)"
-
 PHP_CMD="${PHP_CMD_MAP[$TARGET]:-$PHP_CMD}"
 
 mapped_target_dir="${TARGET_DIR_MAP[$TARGET]:-$TARGET}"
@@ -113,6 +111,8 @@ DEPLOY_DIR=$(merge_paths "${DEPLOY_ROOT}" "$mapped_deploy_dir")
 
 DEFAULT_USER="$(stat -c "%U" "$TARGET_DIR/var")"
 DEFAULT_GROUP="$(stat -c "%G" "$TARGET_DIR/var")"
+
+USER_HOME="$(eval echo ~$DEFAULT_USER)"
 
 TARGET_GIT_BRANCH=$(get_git_branch "${TARGET_DIR}")
 DEPLOY_GIT_BRANCH=$(get_git_branch "${DEPLOY_DIR}")
