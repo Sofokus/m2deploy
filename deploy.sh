@@ -203,7 +203,7 @@ set_permissions() {
     local dir=$1
     set_permissions_base "$dir"
     sudo chown -R "$DEFAULT_USER":"$DEFAULT_GROUP" "$dir"
-    sudo chmod -R u+wo-w "$dir"/.
+    sudo chmod -R u+w,o-w "$dir"/.
 }
 
 set_permissions_no_media() {
