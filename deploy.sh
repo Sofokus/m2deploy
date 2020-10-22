@@ -191,14 +191,35 @@ sudo mysqldump -h"$TARGET_DB_HOST" -P"$TARGET_DB_PORT" -u"$TARGET_DB_USER" -p"$T
         "$DEPLOY_DB" < "$TEMP/prod_core.sql"
 sudo rm "$TEMP/prod_core.sql"
 
-set_permissions() {
+set_permissions_base() {
     local dir=$1
     echo "# Setting permissions of $dir as $DEFAULT_USER:$DEFAULT_GROUP"
-    sudo chown -R "$DEFAULT_USER":"$DEFAULT_GROUP" "$dir"
     sudo chmod o-rwx "$dir"/app/etc/env.php
     sudo chmod u+x "$dir"/bin/magento
-    sudo chmod -R u+w "$dir"/.
     echo
+}
+
+set_permissions() {
+    local dir=$1
+    set_permissions_base "$dir"
+    sudo chown -R "$DEFAULT_USER":"$DEFAULT_GROUP" "$dir"
+    sudo chmod -R u+wo-w "$dir"/.
+}
+
+set_permissions_no_media() {
+    local dir=$1
+    set_permissions_base "$dir"
+    sudo find "$dir"/. \
+       -path "$dir"/pub -prune \
+       -o -exec chown "$DEFAULT_USER":"$DEFAULT_GROUP" {} +
+    sudo find "$dir"/. \
+       -path "$dir"/pub -prune \
+       -o -exec chmod u+w,o-w {} +
+}
+
+set_permissions_media_only() {
+    local dir="$1/pub"
+    set_permissions "$dir"
 }
 
 set_permissions "$DEPLOY_DIR"
@@ -340,6 +361,8 @@ $RSYNC_CMD --filter="merge ${RSYNC_FILTER_FILE}"
 $RSYNC_CMD_MEDIA
 echo
 
+set_permissions_no_media "$TARGET_DIR"
+
 echo "# Run setup upgrade"
 if [ "$MODE" = "default" ]
 then
@@ -357,6 +380,6 @@ sudo service "php${PHP_VERSION}-fpm" reload
 $TARGET_MAGECMD maintenance:disable
 echo
 
-set_permissions "$TARGET_DIR"
+set_permissions_media_only "$TARGET_DIR"
 
 measure_timer "Deployment to ${TARGET_ENV_INFO}"
