@@ -208,7 +208,7 @@ set_permissions() {
 
 set_permissions_no_media() {
     local dir=$1
-    set_permissions_base "$dir"
+    echo "# Setting permissions of $dir as $DEFAULT_USER:$DEFAULT_GROUP"
     sudo find "$dir"/. \
        -path "$dir"/pub -prune \
        -o -exec chown "$DEFAULT_USER":"$DEFAULT_GROUP" {} +
