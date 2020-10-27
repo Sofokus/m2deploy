@@ -206,22 +206,6 @@ set_permissions() {
     sudo chmod -R u+w,o-w "$dir"/.
 }
 
-set_permissions_no_media() {
-    local dir=$1
-    echo "# Setting permissions of $dir as $DEFAULT_USER:$DEFAULT_GROUP"
-    sudo find "$dir"/. \
-       -path "$dir"/pub -prune \
-       -o -exec chown "$DEFAULT_USER":"$DEFAULT_GROUP" {} +
-    sudo find "$dir"/. \
-       -path "$dir"/pub -prune \
-       -o -exec chmod u+w,o-w {} +
-}
-
-set_permissions_media_only() {
-    local dir="$1/pub"
-    set_permissions "$dir"
-}
-
 set_permissions "$DEPLOY_DIR"
 
 echo "# Git reset, clean, pull into $DEPLOY_DIR"
@@ -361,7 +345,7 @@ $RSYNC_CMD --filter="merge ${RSYNC_FILTER_FILE}"
 $RSYNC_CMD_MEDIA
 echo
 
-set_permissions_no_media "$TARGET_DIR"
+set_permissions_base "$TARGET_DIR"
 
 echo "# Run setup upgrade"
 if [ "$MODE" = "default" ]
@@ -380,6 +364,6 @@ sudo service "php${PHP_VERSION}-fpm" reload
 $TARGET_MAGECMD maintenance:disable
 echo
 
-set_permissions_media_only "$TARGET_DIR"
+set_permissions "$TARGET_DIR"
 
 measure_timer "Deployment to ${TARGET_ENV_INFO}"
