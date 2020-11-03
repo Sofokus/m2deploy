@@ -185,7 +185,9 @@ echo "*** Preparing deployment to ${TARGET_ENV_INFO} ***"
 echo
 
 echo "# Copying $DB_TABLES to $DEPLOY_DB"
-sudo mysqldump -h"$TARGET_DB_HOST" -P"$TARGET_DB_PORT" -u"$TARGET_DB_USER" -p"$TARGET_DB_PASS" --single-transaction \
+sudo mysqldump -h"$TARGET_DB_HOST" -P"$TARGET_DB_PORT" -u"$TARGET_DB_USER" -p"$TARGET_DB_PASS" \
+        --single-transaction \
+        --no-tablespaces \
         "$TARGET_DB" $DB_TABLES > "$TEMP/prod_core.sql" \
     && sudo mysql -h"$DEPLOY_DB_HOST" -P"$DEPLOY_DB_PORT" -u"$DEPLOY_DB_USER" -p"$DEPLOY_DB_PASS" \
         "$DEPLOY_DB" < "$TEMP/prod_core.sql"
