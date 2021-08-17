@@ -112,7 +112,7 @@ DEPLOY_DIR=$(merge_paths "${DEPLOY_ROOT}" "$mapped_deploy_dir")
 DEFAULT_USER="$(stat -c "%U" "$TARGET_DIR/var")"
 DEFAULT_GROUP="$(stat -c "%G" "$TARGET_DIR/var")"
 
-USER_HOME="$(eval echo ~$DEFAULT_USER)"
+USER_HOME="$(eval echo ~"$DEFAULT_USER")"
 
 TARGET_GIT_BRANCH=$(get_git_branch "${TARGET_DIR}")
 DEPLOY_GIT_BRANCH=$(get_git_branch "${DEPLOY_DIR}")
@@ -188,7 +188,7 @@ echo "# Copying $DB_TABLES to $DEPLOY_DB"
 sudo mysqldump -h"$TARGET_DB_HOST" -P"$TARGET_DB_PORT" -u"$TARGET_DB_USER" -p"$TARGET_DB_PASS" \
         --single-transaction \
         --no-tablespaces \
-        "$TARGET_DB" $DB_TABLES > "$TEMP/prod_core.sql" \
+        "$TARGET_DB" "$DB_TABLES" > "$TEMP/prod_core.sql" \
     && sudo mysql -h"$DEPLOY_DB_HOST" -P"$DEPLOY_DB_PORT" -u"$DEPLOY_DB_USER" -p"$DEPLOY_DB_PASS" \
         "$DEPLOY_DB" < "$TEMP/prod_core.sql"
 sudo rm "$TEMP/prod_core.sql"
@@ -229,7 +229,7 @@ then
 	# second compile needed, because the initial compile might not generate
 	# code for modules enabled by the upgrade
 	$DEPLOY_MAGECMD setup:di:compile -v
-	$COMPOSER_CMD --working-dir=$DEPLOY_DIR dump-autoload -o --apcu
+	$COMPOSER_CMD --working-dir="$DEPLOY_DIR" dump-autoload -o --apcu
 	echo
 fi
 
@@ -307,14 +307,15 @@ echo
 set +e
 
 # uninstall command enables maintenance mode separately
-if [[ -n $removed_modules ]]
+if [[ -n $removed_modules ]] && [ "$MODE" = "default" ]
 then
     echo "# Uninstall modules $removed_modules"
     # https://community.magento.com/t5/Magento-2-x-Technical-Issues/Custom-module-uninstall/m-p/50114/highlight/true#M1430
-    $SUDO_USR ln -s ~$USER_HOME/.config/composer/auth.json "$TARGET_DIR"/
-    $TARGET_MAGECMD module:uninstall -v $removed_modules
+    $SUDO_USR ln -s ~"$USER_HOME"/.config/composer/auth.json "$TARGET_DIR"/
+    $TARGET_MAGECMD module:uninstall -v "$removed_modules"
     sudo unlink "$TARGET_DIR"/auth.json
-else
+elif [ "$MODE" = "default" ]
+then
     echo "# No modules to uninstall"
 fi
 
