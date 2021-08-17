@@ -281,8 +281,11 @@ echo
 $RSYNC_CMD_MEDIA --dry-run --verbose
 echo '--- Files to deploy end ---'
 
-echo
-echo "Modules to be removed: $removed_modules"
+if [[ -n $removed_modules ]] && [ "$MODE" = "default" ]
+then
+    echo
+    echo "Modules to be removed: $removed_modules"
+fi
 
 measure_timer 'Preparation'
 
