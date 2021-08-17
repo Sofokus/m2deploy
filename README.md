@@ -15,7 +15,7 @@ The script performs the following steps:
 6. Runs static-content:deploy for all configured locales
 7. Shows changes and ask permission to run deploy to target
 8. Enables maintenance mode
-9. Rsyncs files form deploy to target
+9. Rsyncs files from deploy to target
 10. Runs setup:upgrade
 11. Flushes caches
 12. Disables maintenance mode
